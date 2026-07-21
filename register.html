@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investa - Create Account</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #2563eb;       /* Royal Blue */
+            --primary-hover: #1d4ed8;
+            --accent: #0d9488;        /* Dark Teal */
+            --text-dark: #0f172a;     /* Slate Dark */
+            --text-muted: #64748b;    /* Slate Muted */
+            --bg-light: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #cbd5e1;
+            --error-color: #ef4444;
+            --success-color: #10b981;
+            --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Container & Card */
+        .auth-container {
+            width: 100%;
+            max-width: 440px;
+        }
+
+        .auth-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 36px 28px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .auth-title {
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 24px;
+        }
+
+        /* Form Inputs */
+        .form-group {
+            margin-bottom: 16px;
+            text-align: left;
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background-color: #fff;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        /* Password Input Wrapper with Eye Icon */
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper .form-input {
+            padding-right: 48px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+        }
+
+        .toggle-password:hover {
+            color: var(--primary);
+        }
+
+        /* Submit Button & Spinner */
+        .btn-submit {
+            width: 100%;
+            background-color: var(--primary);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 50px;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.8;
+            cursor: not-allowed;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Footer Link */
+        .auth-footer {
+            margin-top: 20px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .auth-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Custom Toast Alert */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background-color: var(--text-dark);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            opacity: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success { background-color: var(--success-color); }
+        .toast.error { background-color: var(--error-color); }
+    </style>
+</head>
+<body>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <h1 class="auth-title">Create Account</h1>
+
+            <form id="registerForm">
+                <div class="form-group">
+                    <input type="text" id="fullName" class="form-input" placeholder="Full Name" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="email" id="email" class="form-input" placeholder="Email" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="tel" id="phone" class="form-input" placeholder="Phone Number" required>
+                </div>
+
+                <div class="form-group password-wrapper">
+                    <input type="password" id="password" class="form-input" placeholder="Password" required minlength="6">
+                    <button type="button" class="toggle-password" id="togglePassword" aria-label="Toggle password visibility">
+                        <!-- Closed Eye Icon (Default) -->
+                        <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path>
+                            <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path>
+                            <path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path>
+                            <line x1="2" y1="2" x2="22" y2="22"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="form-group">
+                    <input type="text" id="referralCode" class="form-input" placeholder="Referral Code (Optional)">
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn-submit">
+                    <span id="btnText">Create Account</span>
+                    <div id="spinner" class="spinner"></div>
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                Already have account? <a href="login.html">Login</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const registerForm = document.getElementById('registerForm');
+        const passwordInput = document.getElementById('password');
+        const togglePasswordBtn = document.getElementById('togglePassword');
+        const eyeIcon = document.getElementById('eyeIcon');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const spinner = document.getElementById('spinner');
+        const toast = document.getElementById('toast');
+
+        // SVG Icons for Eye Toggle
+        const eyeOpenSVG = `<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"></path><circle cx="12" cy="12" r="3"></circle>`;
+        const eyeClosedSVG = `<path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path><line x1="2" y1="2" x2="22" y2="22"></line>`;
+
+        // Toggle Password Visibility
+        togglePasswordBtn.addEventListener('click', () => {
+            const isPassword = passwordInput.getAttribute('type') === 'password';
+            passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+            eyeIcon.innerHTML = isPassword ? eyeOpenSVG : eyeClosedSVG;
+        });
+
+        // Show Toast Function
+        function showToast(message, type = 'success') {
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Form Submission Logic
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const phone = document.getElementById('phone').value.trim();
+            const password = passwordInput.value;
+            const referralCode = document.getElementById('referralCode').value.trim();
+
+            // Retrieve existing users from LocalStorage
+            const existingUsers = JSON.parse(localStorage.getItem('investa_users')) || [];
+
+            // Check for duplicates
+            const isEmailTaken = existingUsers.some(user => user.email === email);
+            const isPhoneTaken = existingUsers.some(user => user.phone === phone);
+
+            if (isEmailTaken) {
+                showToast('Email address already registered.', 'error');
+                return;
+            }
+
+            if (isPhoneTaken) {
+                showToast('Phone number already registered.', 'error');
+                return;
+            }
+
+            // Lock UI & Start Initial Spinner (2 Seconds)
+            submitBtn.disabled = true;
+            btnText.style.display = 'none';
+            spinner.style.display = 'block';
+
+            setTimeout(() => {
+                // Save user data after initial 2 seconds
+                const newUser = {
+                    fullName,
+                    email,
+                    phone,
+                    password, // Note: For production use, passwords should be securely hashed backend-side
+                    referralCode,
+                    createdAt: new Date().toISOString()
+                };
+
+                existingUsers.push(newUser);
+                localStorage.setItem('investa_users', JSON.stringify(existingUsers));
+
+                // Display Success Alert / Toast
+                showToast('Account Successfully Created', 'success');
+
+                // Continue spinning for another 2 seconds before redirecting
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
